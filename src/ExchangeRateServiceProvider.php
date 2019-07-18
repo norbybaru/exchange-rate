@@ -26,8 +26,8 @@ class ExchangeRateServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom($this->configPath(), 'exchange');
 
-        $this->app->singleton('Exchange', function () {
-            return new Exchange($this->app['config']->get('exchange'));
+        $this->app->singleton('Exchanger', function () {
+            return new Exchanger($this->app['config']->get('exchange'));
         });
     }
 

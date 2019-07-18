@@ -3,10 +3,10 @@
 use NorbyBaru\ExchangeRate\Models\ExchangeRate;
 
 /**
- * Class Exchange
+ * Class Exchanger
  * @package NorbyBaru\ExchangeRate
  */
-class Exchange
+class Exchanger
 {
     /** @var string  */
     protected $baseCurrency;
@@ -64,9 +64,17 @@ class Exchange
             ->where('base_currency_iso', $this->baseCurrency)
             ->firstOrFail();
 
-        $result = $amount * ($from->rate/$to->rate);
+        if ($fromCurrencyISO == $this->baseCurrency) {
+            $result = $amount * $to->rate;
+            $rate = round($to->rate, 4);
+        } else {
+            $result = $to->rate * ($amount/$from->rate);
+            $rate = round($to->rate/$from->rate, 4);
+        }
 
-        return new Money($result, $to->currency_iso, $this->baseCurrency, $to->source_updated_at);
+        $rate = "1 {$from->currency_iso} = {$rate} {$to->currency_iso}";
+
+        return new Money($result, $to->currency_iso, $this->baseCurrency, $rate, $to->source_updated_at);
     }
 
     /**

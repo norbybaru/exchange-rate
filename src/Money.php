@@ -18,6 +18,9 @@ class Money
     /** @var string */
     protected $baseCurrency;
 
+    /** @var string  */
+    protected $rate;
+
     /** @var Carbon */
     protected $lastUpdatedAt;
 
@@ -29,13 +32,13 @@ class Money
      * @param string    $baseCurrency
      * @param Carbon    $updatedAt
      */
-    public function __construct($amount, string $currency = 'USD', string $baseCurrency = 'USD', $updatedAt = null)
+    public function __construct($amount, string $currency = 'USD', string $baseCurrency = 'USD', string $rate = null, $updatedAt = null)
     {
-
         $this->amount = (float)$amount;
         $this->currency = $currency;
         $this->baseCurrency = $baseCurrency;
         $this->lastUpdatedAt = $updatedAt ? $updatedAt : now();
+        $this->rate = $rate;
     }
 
     /**
@@ -118,5 +121,21 @@ class Money
     public function setLastUpdatedAt(Carbon $lastUpdatedAt): void
     {
         $this->lastUpdatedAt = $lastUpdatedAt;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRate(): string
+    {
+        return $this->rate;
+    }
+
+    /**
+     * @param string $rate
+     */
+    public function setRate(string $rate): void
+    {
+        $this->rate = $rate;
     }
 }
