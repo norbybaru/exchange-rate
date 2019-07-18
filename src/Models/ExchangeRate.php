@@ -20,11 +20,13 @@ class ExchangeRate extends Model
         parent::boot();
 
         static::created(function($model) {
-            ExchangeRateHistory::query()->insert($model);
+            $data = collect($model->toArray())->except('id')->toArray();
+            ExchangeRateHistory::query()->insert($data);
         });
 
         static::updated(function($model) {
-            ExchangeRateHistory::query()->insert($model);
+            $data = collect($model->toArray())->except('id')->toArray();
+            ExchangeRateHistory::query()->insert($data);
         });
     }
 
