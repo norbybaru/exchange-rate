@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2018 RIMU (Ringier International Market Unit)
+Copyright (c) 2018 Norby Baruani
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
