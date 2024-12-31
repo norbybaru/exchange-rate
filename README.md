@@ -1,28 +1,44 @@
 # Laravel Exchange Rate
-Allows to convert money from one currency to another using latest exchange rate on market
+Laravel Exchange Rate Package Allows to convert money from one currency to another using latest exchange rate on market
+
+## Supported Providers
+- [x] [Exchangerates](https://exchangeratesapi.io)
+- [x] [European Central Bank](https://www.ecb.europa.eu)
+- [ ] [ExchangeRate-API](https://www.exchangerate-api.com)
+- [ ] [OpenExchangeRates](https://openexchangerates.org)
+- [ ] [CurrencyLayer](https://currencylayer.com)
+- [ ] [CurrencyConverterAPI](https://www.currencyconverterapi.com)
 
 ## Installation
 
-```php
-$ composer install norbybaru/exchange-rate
+```bash
+composer require norbybaru/exchange-rate
 ```
-Publish Config `config/exchange.php`
-```php
-$ php artisan vendor:publish --provider="NorbyBaru\ExchangeRate\ExchangeRateServiceProvider"
+
+Publish Config `config/exchange-rate.php`
+```bash
+php artisan vendor:publish --tag="exchange-rate-config"
+```
+
+Publish Migrations
+```bash
+php artisan vendor:publish --tag="exchange-rate-migration"
 ```
 
 Run Migration
-```php
-$ php artisan migrate
+```bash
+php artisan migrate
 ```
 
 ## Usage
 Update exchange rate to get latest rate on the market.
 Run below command to get latest exchange rate
 
-```php
-$ php artisan rate:update
+```bash
+php artisan exchange-rate:update
 ```
+My advice is to run this command as cron job to update exchange rate daily.
+You could learn more about scheduler [Laravel Scheduler](https://laravel.com/docs/scheduling)
 
 * Get Rate
 ```php
