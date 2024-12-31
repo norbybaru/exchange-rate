@@ -59,7 +59,7 @@ class ExchangeRatesApiProvider extends RequestService implements
             baseCurrencyISO: $this->baseCurrencyISO
         );
 
-        $this->updateOrCreate(rates: $rates);
+        $this->updateOrCreateRates(rates: $rates);
     }
 
     protected function getAccessKey(): string

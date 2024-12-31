@@ -81,7 +81,7 @@ abstract class RequestService
         return $rates;
     }
 
-    protected function updateOrCreate(Collection $rates): void
+    protected function updateOrCreateRates(Collection $rates): void
     {
         ExchangeRate::query()->upsert(
             values: $rates->all(),

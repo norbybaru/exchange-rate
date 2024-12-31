@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace NorbyBaru\ExchangeRate\Services\Provider;
 
 use Illuminate\Support\Carbon;
-use NorbyBaru\ExchangeRate\Models\ExchangeRate;
-use NorbyBaru\ExchangeRate\Models\ExchangeRateHistory;
 use NorbyBaru\ExchangeRate\Services\Contract\ExchangeRateContract;
 use NorbyBaru\ExchangeRate\Services\RequestService;
 
@@ -60,11 +58,11 @@ class EuroBankProvider extends RequestService implements ExchangeRateContract
                 );
         }
 
-        ExchangeRate::query()->upsert(
-            values: $rates->all(),
-            uniqueBy: ["currency_iso", "base_currency_iso"]
+        $rates = $this->decorator(
+            rates: $rates,
+            baseCurrencyISO: $this->baseCurrencyISO
         );
 
-        ExchangeRateHistory::query()->insert($rates->all());
+        $this->updateOrCreateRates(rates: $rates);
     }
 }
