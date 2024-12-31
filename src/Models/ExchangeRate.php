@@ -1,17 +1,17 @@
-<?php namespace NorbyBaru\ExchangeRate\Models;
+<?php
 
+namespace NorbyBaru\ExchangeRate\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class ExchangeRate
- *
  * @property int $id
  * @property string $currency_iso
- * @property string $rate
+ * @property float $rate
  * @property string $base_currency_iso
- * @property \Carbon\Carbon $source_updated_at
- * @package NorbyBaru\ExchangeRate\Models
+ * @property \Illuminate\Support\Carbon $source_updated_at
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
  */
 class ExchangeRate extends Model
 {
@@ -19,27 +19,20 @@ class ExchangeRate extends Model
     {
         parent::boot();
 
-        static::created(function($model) {
+        static::created(function ($model) {
             $data = collect($model->toArray())->except('id')->toArray();
             ExchangeRateHistory::query()->insert($data);
         });
 
-        static::updated(function($model) {
+        static::updated(function ($model) {
             $data = collect($model->toArray())->except('id')->toArray();
             ExchangeRateHistory::query()->insert($data);
         });
     }
 
-    protected $fillable = [
-        'currency_iso',
-        'rate',
-        'base_currency_iso',
-        'source_updated_at',
-    ];
+    protected $guarded = ['id'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'source_updated_at',
+    protected $cast = [
+        'source_updated_at' => 'datetime',
     ];
 }

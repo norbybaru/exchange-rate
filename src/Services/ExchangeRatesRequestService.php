@@ -1,63 +1,17 @@
-<?php namespace NorbyBaru\ExchangeRate\Services;
+<?php
 
-use Carbon\Carbon;
-use NorbyBaru\ExchangeRate\Models\ExchangeRate;
-use NorbyBaru\ExchangeRate\Models\ExchangeRateHistory;
+namespace NorbyBaru\ExchangeRate\Services;
 
-/**
- * Class RateRequestService
- * @package NorbyBaru\ExchangeRate\Services
- */
-class ExchangeRatesRequestService extends RequestService
+use NorbyBaru\ExchangeRate\Services\Contract\ExchangeRateContract;
+
+class ExchangeRatesRequestService
 {
-    /** @var string  */
-    private $baseCurrencyISO;
+    public function __construct(
+        protected ExchangeRateContract $exchangeRateService
+    ) {}
 
-    /** @var string  */
-    private $baseUrl = "https://api.exchangeratesapi.io/";
-
-    /**
-     * ExchangeRatesRequestService constructor.
-     *
-     * @param string $baseCurrencyISO
-     */
-    public function __construct(string $baseCurrencyISO = 'USD')
+    public function updateRate(): void
     {
-        parent::__construct($this->baseUrl);
-        $this->baseCurrencyISO = $baseCurrencyISO;
-    }
-
-    /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function latest()
-    {
-        $params = [
-            'base' => $this->baseCurrencyISO
-        ];
-
-        $response = $this->request('get', 'latest', $params);
-
-        $sourceUpdatedDate = $response->date;
-
-        $rates = collect($response->rates)
-            ->map(function ($rate, $currencyIso) use ($sourceUpdatedDate) {
-                return [
-                    'currency_iso'  => $currencyIso,
-                    'rate'          => $rate,
-                    'base_currency_iso' => $this->baseCurrencyISO,
-                    'source_updated_at' => Carbon::parse($sourceUpdatedDate),
-                    'created_at'        => Carbon::now(),
-                    'updated_at'        => Carbon::now(),
-                ];
-            })
-            ->all();
-
-        //TODO: Refactor this to always have fresh db for rates and log changes to history table
-        ExchangeRate::query()->truncate();
-
-        ExchangeRate::query()->insert($rates);
-
-        ExchangeRateHistory::query()->insert($rates);
+        $this->exchangeRateService->latest();
     }
 }
