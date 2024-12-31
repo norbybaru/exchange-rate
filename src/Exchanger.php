@@ -8,18 +8,16 @@ use NorbyBaru\ExchangeRate\Models\ExchangeRate;
 
 class Exchanger
 {
-    public function __construct(protected string $baseCurrency)
-    {
-    }
+    public function __construct(protected string $baseCurrency) {}
 
-    public function rate(string $currency = null, int $round = 2): float
+    public function rate(?string $currency = null, int $round = 2): float
     {
         $currency = strtoupper($currency);
 
         /** @var ExchangeRate $exchange */
         $exchange = ExchangeRate::query()
-            ->where("currency_iso", $currency)
-            ->where("base_currency_iso", $this->baseCurrency)
+            ->where('currency_iso', $currency)
+            ->where('base_currency_iso', $this->baseCurrency)
             ->firstOrFail();
 
         return round($exchange->rate, $round);
@@ -35,14 +33,14 @@ class Exchanger
 
         /** @var ExchangeRate $from */
         $from = ExchangeRate::query()
-            ->where("currency_iso", $from)
-            ->where("base_currency_iso", $this->baseCurrency)
+            ->where('currency_iso', $from)
+            ->where('base_currency_iso', $this->baseCurrency)
             ->firstOrFail();
 
         /** @var ExchangeRate $to */
         $to = ExchangeRate::query()
-            ->where("currency_iso", $to)
-            ->where("base_currency_iso", $this->baseCurrency)
+            ->where('currency_iso', $to)
+            ->where('base_currency_iso', $this->baseCurrency)
             ->firstOrFail();
 
         if ($fromCurrencyISO == $this->baseCurrency) {

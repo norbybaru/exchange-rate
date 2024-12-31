@@ -8,8 +8,7 @@ class ExchangeRatesRequestService
 {
     public function __construct(
         protected ExchangeRateContract $exchangeRateService
-    ) {
-    }
+    ) {}
 
     public function updateRate(): void
     {

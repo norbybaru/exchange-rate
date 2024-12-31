@@ -5,7 +5,6 @@ namespace NorbyBaru\ExchangeRate\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
  * @property int $id
  * @property string $currency_iso
  * @property float $rate
@@ -21,19 +20,19 @@ class ExchangeRate extends Model
         parent::boot();
 
         static::created(function ($model) {
-            $data = collect($model->toArray())->except("id")->toArray();
+            $data = collect($model->toArray())->except('id')->toArray();
             ExchangeRateHistory::query()->insert($data);
         });
 
         static::updated(function ($model) {
-            $data = collect($model->toArray())->except("id")->toArray();
+            $data = collect($model->toArray())->except('id')->toArray();
             ExchangeRateHistory::query()->insert($data);
         });
     }
 
-    protected $guarded = ["id"];
+    protected $guarded = ['id'];
 
     protected $cast = [
-        "source_updated_at" => "datetime",
+        'source_updated_at' => 'datetime',
     ];
 }

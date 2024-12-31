@@ -10,12 +10,11 @@ class Money
 {
     public function __construct(
         protected float $amount,
-        protected string $currency = "USD",
-        protected string $baseCurrency = "USD",
+        protected string $currency = 'USD',
+        protected string $baseCurrency = 'USD',
         protected ?string $rate = null,
         protected ?Carbon $lastUpdatedAt = null
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {
@@ -25,7 +24,7 @@ class Money
     public function formatted(int $round = 2): string
     {
         return sprintf(
-            "%s %s",
+            '%s %s',
             number_format($this->amount, $round),
             $this->currency
         );

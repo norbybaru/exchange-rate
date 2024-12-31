@@ -14,21 +14,21 @@ class ExchangeRateCommand extends Command
      *
      * @var string
      */
-    protected $signature = "exchange-rate:update";
+    protected $signature = 'exchange-rate:update';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Update Exchange rate to get latest one from third party";
+    protected $description = 'Update Exchange rate to get latest one from third party';
 
     public function handle(ExchangeRatesRequestService $exchangeRateRequest)
     {
-        $this->info("Processing Exchange Rate updates...");
+        $this->info('Processing Exchange Rate updates...');
 
         $exchangeRateRequest->updateRate();
 
-        $this->info("Exchange Rate updated successfully");
+        $this->info('Exchange Rate updated successfully');
     }
 }

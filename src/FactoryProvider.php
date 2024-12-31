@@ -10,22 +10,20 @@ use NorbyBaru\ExchangeRate\Services\Provider\ExchangeRatesApiProvider;
 
 class FactoryProvider
 {
-    public function __construct(protected array $config)
-    {
-    }
+    public function __construct(protected array $config) {}
 
     public function getProvider()
     {
-        $baseCurrencyISO = $this->config["base_currency"];
-        switch ($this->config["provider"]) {
-            case "exchangeratesapi":
+        $baseCurrencyISO = $this->config['base_currency'];
+        switch ($this->config['provider']) {
+            case 'exchangeratesapi':
                 return new ExchangeRatesApiProvider(
                     baseCurrencyISO: $baseCurrencyISO
                 );
-            case "eurobank":
+            case 'eurobank':
                 return new EuroBankProvider(baseCurrencyISO: $baseCurrencyISO);
             default:
-                throw new \Exception("Provider not found");
+                throw new \Exception('Provider not found');
         }
     }
 

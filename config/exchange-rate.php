@@ -9,7 +9,7 @@ return [
     | Default currency to convert from
     |
     */
-    "base_currency" => env("BASE_CURRENCY_ISO", "USD"),
+    'base_currency' => env('BASE_CURRENCY_ISO', 'USD'),
 
     /*
     |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ return [
     | Supported: exchangeratesapi, eurobank
     |
     */
-    "provider" => env("EXCHANGE_RATE_PROVIDER", "eurobank"),
+    'provider' => env('EXCHANGE_RATE_PROVIDER', 'eurobank'),
 
     /*
     |--------------------------------------------------------------------------
@@ -31,9 +31,9 @@ return [
     | Configuration for each provider
     |
     */
-    "providers" => [
-        "exchangeratesapi" => [
-            "access_key" => env("EXCHANGERATESAPI_ACCESS_KEY", ""),
+    'providers' => [
+        'exchangeratesapi' => [
+            'access_key' => env('EXCHANGERATESAPI_ACCESS_KEY', ''),
         ],
     ],
 
@@ -48,23 +48,23 @@ return [
     |
     |
     */
-    "whitelist_currency_iso" => [
-        "USD", //United States Dollar
-        "EUR", //Euro
-        "JPY", //Japanese Yen
-        "GBP", //British Pound Sterling
-        "AUD", //Australian Dollar
-        "CAD", //Canadian Dollar
-        "CHF", //Swiss Franc
-        "CNY", //Chinese Yuan
-        "SEK", //Swedish Krona
-        "NZD", //New Zealand Dollar
-        "MXN", //Mexican Peso
-        "SGD", //Singapore Dollar
-        "HKD", //Hong Kong Dollar
-        "NOK", //Norwegian Krone
-        "KRW", //South Korean Won
-        "TRY", //Turkish Lira
-        "ZAR", //South African Rand
+    'whitelist_currency_iso' => [
+        'USD', // United States Dollar
+        'EUR', // Euro
+        'JPY', // Japanese Yen
+        'GBP', // British Pound Sterling
+        'AUD', // Australian Dollar
+        'CAD', // Canadian Dollar
+        'CHF', // Swiss Franc
+        'CNY', // Chinese Yuan
+        'SEK', // Swedish Krona
+        'NZD', // New Zealand Dollar
+        'MXN', // Mexican Peso
+        'SGD', // Singapore Dollar
+        'HKD', // Hong Kong Dollar
+        'NOK', // Norwegian Krone
+        'KRW', // South Korean Won
+        'TRY', // Turkish Lira
+        'ZAR', // South African Rand
     ],
 ];

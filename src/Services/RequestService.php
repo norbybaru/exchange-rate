@@ -1,6 +1,7 @@
-<?php namespace NorbyBaru\ExchangeRate\Services;
+<?php
 
-use Exception;
+namespace NorbyBaru\ExchangeRate\Services;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use Illuminate\Support\Collection;
@@ -10,11 +11,10 @@ use NorbyBaru\ExchangeRate\Models\ExchangeRateHistory;
 
 /**
  * Class RequestService
- * @package NorbyBaru\ExchangeRate\Services
  */
 abstract class RequestService
 {
-    /** @var string  */
+    /** @var string */
     private $baseCurrencyISO;
 
     private Client $client;
@@ -22,13 +22,13 @@ abstract class RequestService
     public function __construct(string $baseUrl)
     {
         $this->client = new Client([
-            "base_uri" => $baseUrl,
+            'base_uri' => $baseUrl,
         ]);
     }
 
     public function get(string $uri, array $params = []): array
     {
-        return $this->request(method: "get", uri: $uri, params: $params);
+        return $this->request(method: 'get', uri: $uri, params: $params);
     }
 
     protected function request(
@@ -37,8 +37,8 @@ abstract class RequestService
         array $params = []
     ): array {
         try {
-            if ($method == "get") {
-                $params = ["query" => $params];
+            if ($method == 'get') {
+                $params = ['query' => $params];
             }
 
             $responseJson = $this->client->request($method, $uri, $params);
@@ -61,20 +61,21 @@ abstract class RequestService
         string $baseCurrencyISO
     ): Collection {
         $baseCurrency = $rates
-            ->where("currency_iso", $baseCurrencyISO)
+            ->where('currency_iso', $baseCurrencyISO)
             ->first();
 
-        if ($baseCurrency["rate"] !== 1) {
+        if ($baseCurrency['rate'] !== 1) {
             $rates = $rates
                 ->map(function ($rate) use ($baseCurrency) {
-                    $rate["rate"] = round(
-                        $rate["rate"] / $baseCurrency["rate"],
+                    $rate['rate'] = round(
+                        $rate['rate'] / $baseCurrency['rate'],
                         3
                     );
+
                     return $rate;
                 })
                 ->reject(
-                    fn($rate) => $rate["currency_iso"] === $baseCurrencyISO
+                    fn ($rate) => $rate['currency_iso'] === $baseCurrencyISO
                 );
         }
 
@@ -85,7 +86,7 @@ abstract class RequestService
     {
         ExchangeRate::query()->upsert(
             values: $rates->all(),
-            uniqueBy: ["currency_iso", "base_currency_iso"]
+            uniqueBy: ['currency_iso', 'base_currency_iso']
         );
 
         ExchangeRateHistory::query()->insert($rates->all());
