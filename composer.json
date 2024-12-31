@@ -1,43 +1,56 @@
 {
-    "name": "norbybaru/exchange-rate",
-    "description": "Laravel Currency Exchange rate",
-    "type": "library",
-    "license": "MIT",
-    "keywords": ["exchange rate", "rate", "exchange", "currency"],
-    "authors": [
-        {
-            "name": "Norby Baruani",
-            "email": "norbybaru@gmail.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "NorbyBaru\\ExchangeRate\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "NorbyBaru\\ExchangeRate\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "NorbyBaru\\ExchangeRate\\ExchangeRateServiceProvider"
-            ],
-            "aliases": {
-                "Exchanger": "NorbyBaru\\ExchangeRate\\Facades\\Exchange"
-            }
-        }
-    },
-    "require": {
-        "php": ">=7.1.3",
-        "illuminate/support": "^5.6 || ^5.7 || ^5.8",
-        "guzzlehttp/guzzle": "^6.3",
-        "ext-json": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.0 || ^7.0"
-    },
-    "prefer-stable": true
+  "name": "norbybaru/exchange-rate",
+  "description": "Laravel Currency Exchange rate",
+  "type": "library",
+  "license": "MIT",
+  "keywords": [
+    "exchange rate",
+    "rate",
+    "exchange",
+    "currency"
+  ],
+  "authors": [
+    {
+      "name": "Norby Baruani",
+      "email": "norbybaru@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "NorbyBaru\\ExchangeRate\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NorbyBaru\\ExchangeRate\\Tests\\": "tests/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "NorbyBaru\\ExchangeRate\\ExchangeRateServiceProvider"
+      ],
+      "aliases": {
+        "Exchanger": "NorbyBaru\\ExchangeRate\\Facades\\Exchange"
+      }
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "ext-json": "*",
+    "guzzlehttp/guzzle": "^7.9",
+    "illuminate/console": "^10.0|^11.0",
+    "illuminate/database": "^10.0|^11.0",
+    "illuminate/support": "^10.0|^11.0"
+  },
+  "require-dev": {
+    "laravel/pint": "^1.18",
+    "phpunit/phpunit": "^10.0|^11.0"
+  },
+  "prefer-stable": true,
+  "minimum-stability": "stable",
+  "config": {
+    "optimize-autoloader": true,
+    "sort-packages": true
+  }
 }

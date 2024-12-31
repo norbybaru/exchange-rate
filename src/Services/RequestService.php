@@ -3,6 +3,10 @@
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
+use Illuminate\Support\Collection;
+use NorbyBaru\ExchangeRate\Exception\ProviderRequestApiException;
+use NorbyBaru\ExchangeRate\Models\ExchangeRate;
+use NorbyBaru\ExchangeRate\Models\ExchangeRateHistory;
 
 /**
  * Class RequestService
@@ -10,45 +14,80 @@ use GuzzleHttp\Exception\BadResponseException;
  */
 abstract class RequestService
 {
-    /** @var \GuzzleHttp\Client  */
-    private $client;
+    /** @var string  */
+    private $baseCurrencyISO;
 
-    public function __construct($baseUrl)
+    private Client $client;
+
+    public function __construct(string $baseUrl)
     {
         $this->client = new Client([
-            'base_uri' => $baseUrl,
-            'headers' => [
-                'Content-Type' => 'application/json'
-            ]
+            "base_uri" => $baseUrl,
         ]);
     }
 
-    /**
-     * @param string $method
-     * @param string $uri
-     * @param array  $params
-     *
-     * @return mixed
-     * @throws \Exception
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function request(string $method, string $uri, $params = [])
+    public function get(string $uri, array $params = []): array
     {
-        try {
+        return $this->request(method: "get", uri: $uri, params: $params);
+    }
 
-            if ($method == 'get') {
-                $params = ['query' => $params];
+    protected function request(
+        string $method,
+        string $uri,
+        array $params = []
+    ): array {
+        try {
+            if ($method == "get") {
+                $params = ["query" => $params];
             }
 
             $responseJson = $this->client->request($method, $uri, $params);
-            $responseObject = json_decode($responseJson->getBody());
+            $responseObject = json_decode($responseJson->getBody(), true);
 
             return $responseObject;
         } catch (BadResponseException $e) {
             $responseJson = $e->getResponse();
-            $responseObject = json_decode($responseJson->getBody()->getContents());
+            $responseObject = json_decode(
+                $responseJson->getBody()->getContents(),
+                true
+            );
 
-            throw new Exception($responseObject->getMessage, $e->getCode());
+            ProviderRequestApiException::throw($responseObject->getMessage());
         }
+    }
+
+    protected function decorator(
+        Collection $rates,
+        string $baseCurrencyISO
+    ): Collection {
+        $baseCurrency = $rates
+            ->where("currency_iso", $baseCurrencyISO)
+            ->first();
+
+        if ($baseCurrency["rate"] !== 1) {
+            $rates = $rates
+                ->map(function ($rate) use ($baseCurrency) {
+                    $rate["rate"] = round(
+                        $rate["rate"] / $baseCurrency["rate"],
+                        3
+                    );
+                    return $rate;
+                })
+                ->reject(
+                    fn($rate) => $rate["currency_iso"] === $baseCurrencyISO
+                );
+        }
+
+        return $rates;
+    }
+
+    protected function updateOrCreate(Collection $rates): void
+    {
+        ExchangeRate::query()->upsert(
+            values: $rates->all(),
+            uniqueBy: ["currency_iso", "base_currency_iso"]
+        );
+
+        ExchangeRateHistory::query()->insert($rates->all());
     }
 }

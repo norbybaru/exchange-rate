@@ -1,12 +1,12 @@
-<?php namespace NorbyBaru\ExchangeRate;
+<?php
 
+namespace NorbyBaru\ExchangeRate;
+
+use NorbyBaru\ExchangeRate\FactoryProvider;
 use Illuminate\Support\ServiceProvider;
-use NorbyBaru\ExchangeRate\Commands\ExchangeRateCommand;
+use NorbyBaru\ExchangeRate\Console\ExchangeRateCommand;
+use NorbyBaru\ExchangeRate\Services\Contract\ExchangeRateContract;
 
-/**
- * Class ExchangeRateServiceProvider
- * @package NorbyBaru\ExchangeRate
- */
 class ExchangeRateServiceProvider extends ServiceProvider
 {
     /**
@@ -14,7 +14,7 @@ class ExchangeRateServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadMigrations();
+        $this->publishDatabase();
         $this->publishConfig();
         $this->registerCommands();
     }
@@ -24,45 +24,72 @@ class ExchangeRateServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom($this->configPath(), 'exchange');
+        $this->mergeConfigFrom($this->configPath(), "exchange-rate");
 
-        $this->app->singleton('Exchanger', function () {
-            return new Exchanger($this->app['config']->get('exchange'));
-        });
+        $this->app->bind(
+            ExchangeRateContract::class,
+            fn() => FactoryProvider::make(
+                config: $this->app["config"]->get("exchange-rate")
+            )
+        );
+
+        $this->app->singleton(
+            "Exchanger",
+            fn() => new Exchanger(
+                baseCurrency: strtoupper(
+                    $this->app["config"]->get("exchange-rate")["base_currency"]
+                )
+            )
+        );
     }
 
-    /**
-     * Load migration files
-     */
-    protected function loadMigrations()
+    protected function publishDatabase(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        if ($this->app->runningInConsole()) {
+            $this->publishes(
+                [
+                    $this->migrationPath() .
+                    "/create_exchange_rates_table.php" => database_path(
+                        "migrations/" .
+                            date("Y_m_d_His", time()) .
+                            "_create_exchange_rates_table.php"
+                    ),
+                    $this->migrationPath() .
+                    "/create_exchange_rate_histories_table.php" => database_path(
+                        "migrations/" .
+                            date("Y_m_d_His", time()) .
+                            "_create_exchange_rate_histories_table.php"
+                    ),
+                ],
+                "exchange-rate-migration"
+            );
+        }
     }
 
-    /**
-     * Return config file
-     *
-     * @return string
-     */
-    protected function configPath()
+    protected function configPath(): string
     {
-        return __DIR__ . '/../config/exchange.php';
+        return __DIR__ . "/../config/exchange-rate.php";
     }
 
-    /**
-     * Publish config file
-     */
-    protected function publishConfig()
+    protected function migrationPath(): string
     {
-        $this->publishes([
-            $this->configPath() => config_path('exchange.php')
-        ]);
+        return __DIR__ . "/../database/migrations";
+    }
+
+    protected function publishConfig(): void
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes(
+                [
+                    $this->configPath() => config_path("exchange-rate.php"),
+                ],
+                "exchange-rate-config"
+            );
+        }
     }
 
     public function registerCommands()
     {
-        $this->commands([
-            ExchangeRateCommand::class
-        ]);
+        $this->commands([ExchangeRateCommand::class]);
     }
 }

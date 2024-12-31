@@ -1,14 +1,12 @@
-<?php namespace NorbyBaru\ExchangeRate\Commands;
+<?php
 
+declare(strict_types=1);
 
+namespace NorbyBaru\ExchangeRate\Console;
 
 use Illuminate\Console\Command;
 use NorbyBaru\ExchangeRate\Services\ExchangeRatesRequestService;
 
-/**
- * Class ExchangeRateCommand
- * @package NorbyBaru\ExchangeRate\Commands
- */
 class ExchangeRateCommand extends Command
 {
     /**
@@ -16,7 +14,7 @@ class ExchangeRateCommand extends Command
      *
      * @var string
      */
-    protected $signature = "rate:update";
+    protected $signature = "exchange-rate:update";
 
     /**
      * The console command description.
@@ -25,10 +23,12 @@ class ExchangeRateCommand extends Command
      */
     protected $description = "Update Exchange rate to get latest one from third party";
 
-    public function handle(ExchangeRatesRequestService $requestService)
+    public function handle(ExchangeRatesRequestService $exchangeRateRequest)
     {
-        $this->info("Starting Rate update...");
+        $this->info("Processing Exchange Rate updates...");
 
-        $requestService->latest();
+        $exchangeRateRequest->updateRate();
+
+        $this->info("Exchange Rate updated successfully");
     }
 }
