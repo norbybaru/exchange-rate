@@ -38,7 +38,7 @@ Run below command to get latest exchange rate
 php artisan exchange-rate:update
 ```
 My advice is to run this command as cron job to update exchange rate daily.
-You could learn more about scheduler [Laravel Scheduler](https://laravel.com/docs/scheduling)
+For more information, see [Laravel Scheduler](https://laravel.com/docs/scheduling)
 
 * Get Rate
 ```php
